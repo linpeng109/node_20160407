@@ -44,11 +44,28 @@ app.get('/insert', function (req, res) {
 });
 
 //查询接口
+// http://www.nodeclass.com/api/mongoose.html#query_Query-sort
 app.get('/findByList', function (req, res) {
     var pageSize = 10;
     var pageNum = 1;
-
+    var query = User.find({})
+    //注意分页
+    query.limit(pageSize)
+    query.skip(pageNum * pageSize)
+    //排序
+    query.sort('userName -passWord');
+    //条件
+    //Mongoose 一些查询方法 - 亿光年 - 博客频道 - CSDN.NET  http://blog.csdn.net/tengzhaorong/article/details/16802109
+    query.where('userName').gte('aa')
+    query.exec(function (err, docs) {
+        if (err) {
+            console.error(JSON.stringify(err))
+        }
+        var result = JSON.stringify(docs);
+        res.send(result)
+    })
 });
+
 
 
 var server = app.listen(3000, function () {
